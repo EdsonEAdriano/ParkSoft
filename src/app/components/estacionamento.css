@@ -1,0 +1,41 @@
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(10, 40px);
+  grid-gap: 5px;
+}
+
+.grid-item {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: lightgray;
+  border: 1px solid #000;
+  cursor: pointer; /* Muda o cursor para indicar que o espaço é clicável */
+}
+
+.grid-item.ocupada {
+  background-color: red;
+  color: white;
+}
+
+.grid-item.selected {
+  border: 2px solid blue; /* Destaca as células selecionadas */
+}
+
+.grid-item.E {
+  background-color: green; /* Cor para a entrada */
+}
+
+.grid-item * {
+  background-color: yellow; /* Cor para o caminho */
+}
+
+.controles {
+  margin-top: 20px;
+}
+
+button {
+  margin: 5px;
+}
