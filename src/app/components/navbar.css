@@ -1,0 +1,111 @@
+.navbar {
+    background-color: #c5c5c585;
+    width: 200px;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px 20px; /* Ajusta o padding para um layout mais responsivo */
+    top: 0;
+    left: 0;
+    margin: 0; /* Remove qualquer margem ao redor da navbar */
+}
+
+.logo {
+    margin-bottom: 50px;
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.logo h1 {
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    text-transform: lowercase;
+}
+
+.menu {
+    list-style-type: none;
+    padding: 0;
+    width: 100%;
+    justify-content: space-between; /* Ajusta para distribuir os itens */
+}
+
+.menu li {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 10px;
+    transition: background-color 0.3s;
+    margin-right: 20px; /* Adiciona margem à direita para espaçamento */
+}
+
+.menu li:hover {
+    background-color: #e0e0e0;
+    border-radius: 8px;
+}
+
+.icon {
+    margin-right: 10px;
+    font-size: 20px;
+}
+
+.menu span {
+    font-family: 'Arial', sans-serif;
+}
+
+/* Icons using FontAwesome */
+.fas {
+    font-family: 'Font Awesome 5 Free';
+}
+
+@media (max-width: 768px) {
+    .navbar {
+        width: 100%;
+        height: auto;
+        flex-direction: row; /* Muda a direção para horizontal */
+        justify-content: space-between; /* Espaça os itens horizontalmente */
+        align-items: center; /* Centraliza os itens verticalmente */
+        position: fixed; /* Fixa a navbar no topo */
+        top: 0; /* Posiciona no topo */
+        left: 0; /* Alinha à esquerda */
+        padding: 10px 15px; /* Ajusta o padding para telas menores */
+        background-color: #f2f2f2; /* Garante que a cor de fundo seja consistente */
+        z-index: 1000; /* Garante que a navbar fique acima de outros elementos */
+    }
+
+    .menu {
+        display: flex;
+        flex-direction: row; /* Direção horizontal para os itens do menu */
+        justify-content: center; /* Centraliza os itens do menu */
+        width: auto; /* Ajusta a largura para o conteúdo */
+    }
+
+    .menu li {
+        margin-bottom: 0; /* Remove a margem inferior */
+        margin-right: 15px; /* Ajusta a margem para telas menores */
+        justify-content: center; /* Centraliza os itens */
+    }
+
+    .logo {
+        margin-bottom: 0; /* Remove a margem inferior */
+    }
+}
+
+.menu li a {
+    display: flex; /* Garante que o link ocupe o espaço necessário */
+    align-items: center; /* Centraliza verticalmente o conteúdo do link */
+    margin-right: 20px; /* Adiciona margem à direita para espaçamento */
+}
+
+.dropdown-button {
+    margin-right: 20px; /* Adiciona margem à direita para espaçamento */
+}
+
+.content {
+    margin-left: 0; /* Ajusta o espaço para a largura da navbar fixa */
+    margin-top: 20px; /* Espaço superior */
+    padding: 20px; /* Padding interno para o conteúdo */
+}
