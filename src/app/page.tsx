@@ -6,6 +6,8 @@ import Estacionamento from "./components/estacionamento";
 
 export default function Home() {
   return (
-    <Estacionamento />
+    <>
+      <Estacionamento />
+    </>  
   );
 }
