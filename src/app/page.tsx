@@ -1,13 +1,13 @@
 "use client";
 
-import Image from "next/image";
+import React from "react";
 import Estacionamento from "./components/estacionamento";
+import Home from "./home";
 
-
-export default function Home() {
+export default function Page() {
   return (
     <>
-      <Estacionamento />
-    </>  
+      <Home />
+    </>
   );
 }
