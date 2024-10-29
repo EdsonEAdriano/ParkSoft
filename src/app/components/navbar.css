@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap');
+
 .navbar {
     background-color: #c5c5c585;
     width: 200px;
@@ -5,10 +7,13 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 10px 20px; /* Ajusta o padding para um layout mais responsivo */
+    padding: 10px 20px;
+    /* Ajusta o padding para um layout mais responsivo */
     top: 0;
     left: 0;
-    margin: 0; /* Remove qualquer margem ao redor da navbar */
+    margin: 0;
+    /* Remove qualquer margem ao redor da navbar */
+    margin-right: 20px;
 }
 
 .logo {
@@ -20,7 +25,7 @@
 
 .logo h1 {
     margin: 0;
-    font-family: 'Arial', sans-serif;
+    font-family: 'Fredoka One', cursive;
     text-transform: lowercase;
 }
 
@@ -28,7 +33,8 @@
     list-style-type: none;
     padding: 0;
     width: 100%;
-    justify-content: space-between; /* Ajusta para distribuir os itens */
+    justify-content: space-between;
+    /* Ajusta para distribuir os itens */
 }
 
 .menu li {
@@ -39,7 +45,8 @@
     cursor: pointer;
     padding: 10px;
     transition: background-color 0.3s;
-    margin-right: 20px; /* Adiciona margem à direita para espaçamento */
+    margin-right: 20px;
+    /* Adiciona margem à direita para espaçamento */
 }
 
 .menu li:hover {
@@ -53,7 +60,22 @@
 }
 
 .menu span {
-    font-family: 'Arial', sans-serif;
+    font-family: 'Fredoka One', cursive;
+    font-size: 16px;
+    /* Tamanho mais adequado */
+    color: #333;
+    /* Cor mais suave */
+    letter-spacing: 0.5px;
+    /* Espaçamento entre letras */
+    font-weight: 400;
+    /* Peso da fonte mais leve */
+    transition: color 0.3s ease;
+    /* Transição suave para hover */
+}
+
+.menu li:hover span {
+    color: #007bff;
+    /* Cor ao passar o mouse */
 }
 
 /* Icons using FontAwesome */
@@ -64,48 +86,108 @@
 @media (max-width: 768px) {
     .navbar {
         width: 100%;
-        height: auto;
-        flex-direction: row; /* Muda a direção para horizontal */
-        justify-content: space-between; /* Espaça os itens horizontalmente */
-        align-items: center; /* Centraliza os itens verticalmente */
-        position: fixed; /* Fixa a navbar no topo */
-        top: 0; /* Posiciona no topo */
-        left: 0; /* Alinha à esquerda */
-        padding: 10px 15px; /* Ajusta o padding para telas menores */
-        background-color: #f2f2f2; /* Garante que a cor de fundo seja consistente */
-        z-index: 1000; /* Garante que a navbar fique acima de outros elementos */
-    }
-
-    .menu {
-        display: flex;
-        flex-direction: row; /* Direção horizontal para os itens do menu */
-        justify-content: center; /* Centraliza os itens do menu */
-        width: auto; /* Ajusta a largura para o conteúdo */
-    }
-
-    .menu li {
-        margin-bottom: 0; /* Remove a margem inferior */
-        margin-right: 15px; /* Ajusta a margem para telas menores */
-        justify-content: center; /* Centraliza os itens */
+        height: 70px;
+        /* Aumentei a altura para acomodar melhor a logo */
+        flex-direction: row;
+        justify-content: space-between;
+        /* Distribui os elementos horizontalmente */
+        align-items: center;
+        padding: 0 20px;
+        position: fixed;
+        background-color: #f2f2f2;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
     }
 
     .logo {
-        margin-bottom: 0; /* Remove a margem inferior */
+        margin: 0;
+        font-size: 24px;
+        /* Aumentei o tamanho da fonte */
+    }
+
+    .logo h1 {
+        font-size: 24px;
+        /* Garante que o título mantenha o tamanho */
+    }
+
+    .menu {
+        position: fixed;
+        top: 70px;
+        left: 0;
+        width: 100%;
+        background-color: #f2f2f2;
+        flex-direction: column;
+        padding: 20px 0;
+        display: none;
+        transition: all 0.3s ease-in-out;
+        z-index: 999;
+    }
+
+    .menu.active {
+        display: flex;
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .menu li {
+        width: 100%;
+        margin: 0;
+        padding: 15px 30px;
+        /* Aumentei o padding lateral */
+        justify-content: flex-start;
+    }
+
+    .menu li:hover {
+        background-color: #e0e0e0;
+    }
+
+    .dropdown-button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        padding: 0;
+        background: none;
+        border: none;
+        cursor: pointer;
     }
 }
 
 .menu li a {
-    display: flex; /* Garante que o link ocupe o espaço necessário */
-    align-items: center; /* Centraliza verticalmente o conteúdo do link */
-    margin-right: 20px; /* Adiciona margem à direita para espaçamento */
+    display: flex;
+    /* Garante que o link ocupe o espaço necessário */
+    align-items: center;
+    /* Centraliza verticalmente o conteúdo do link */
+    margin-right: 20px;
+    /* Adiciona margem à direita para espaçamento */
 }
 
 .dropdown-button {
-    margin-right: 20px; /* Adiciona margem à direita para espaçamento */
-}
+    margin-right: 20px;
 
-.content {
-    margin-left: 0; /* Ajusta o espaço para a largura da navbar fixa */
-    margin-top: 20px; /* Espaço superior */
-    padding: 20px; /* Padding interno para o conteúdo */
+    .content {
+        margin-left: 0;
+        /* Ajusta o espaço para a largura da navbar fixa */
+        margin-top: 20px;
+        /* Espaço superior */
+        padding: 20px;
+        /* Padding interno para o conteúdo */
+    }
+
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .menu.active {
+        animation: slideDown 0.3s ease-in-out;
+    }
 }
