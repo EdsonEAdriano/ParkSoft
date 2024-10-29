@@ -1,9 +1,9 @@
 "use client";
 
-import Entry from './components/entry';
-import axios from 'axios';
-import { useEffect, useState } from 'react';
-import LoadingSpinner from './components/LoadingSpinner';
+import Entry from "./components/entry";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import LoadingSpinner from "./components/LoadingSpinner";
 
 interface IEntry {
   id: number;
@@ -12,7 +12,7 @@ interface IEntry {
   color: string;
   parking_location: string;
   status: string;
-  entry_date: Date; 
+  entry_date: Date;
 }
 
 export default function Entries() {
@@ -20,22 +20,32 @@ export default function Entries() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios.get('http://localhost:3000/api/entries')
-      .then(response => {
+    axios
+      .get("http://localhost:3000/api/entries")
+      .then((response) => {
         setEntries(response.data.entries);
         setLoading(false);
       })
-      .catch(error => {
-        console.error('Erro ao fazer a requisição:', error);
+      .catch((error) => {
+        console.error("Erro ao fazer a requisição:", error);
         setLoading(false);
       });
   }, []);
 
   const months = [
-    'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
-    'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
+    "Janeiro",
+    "Fevereiro",
+    "Março",
+    "Abril",
+    "Maio",
+    "Junho",
+    "Julho",
+    "Agosto",
+    "Setembro",
+    "Outubro",
+    "Novembro",
+    "Dezembro",
   ];
-
 
   return (
     <div>
@@ -50,9 +60,13 @@ export default function Entries() {
               date={String(new Date(row.entry_date).getDate())}
               month={months[new Date(row.entry_date).getMonth()]}
               model={row.vehicle_text}
-              location={row.parking_location ?? 'Não definido'}
-              time={new Date(row.entry_date).getHours() + ':' + String(new Date(row.entry_date).getMinutes()).padStart(2, '0')}
-              licensePlate={row.plate}  
+              location={row.parking_location ?? "Não definido"}
+              time={
+                new Date(row.entry_date).getHours() +
+                ":" +
+                String(new Date(row.entry_date).getMinutes()).padStart(2, "0")
+              }
+              licensePlate={row.plate}
               status={row.status}
               color={row.color}
             />
