@@ -26,7 +26,7 @@ export default function RootLayout({
         style={{ display: 'flex', height: '100vh', margin: 0, overflow: 'hidden' }}
       >
         <Navbar />
-        <div style={{ flex: 1, marginLeft: '200px', overflow: 'auto' }}>
+        <div style={{ flex: 1, overflow: 'auto' }}>
           {children}
         </div>
       </body>

@@ -6,8 +6,7 @@ import Link from 'next/link';
 
 const Navbar: React.FC = () => {
     const [isOpen, setIsOpen] = useState(false);
-    const [isMobile, setIsMobile] = useState(false); // Inicializa como false
-
+    const [isMobile, setIsMobile] = useState(false); 
     const toggleDropdown = () => {
         if (isMobile) {
             setIsOpen(!isOpen);
@@ -47,8 +46,7 @@ const Navbar: React.FC = () => {
                 </button>
             )}
             {(isOpen || !isMobile) && ( 
-                <ul className="menu dropdown">
-                    <li>
+                <ul className={`menu dropdown ${isOpen ? 'active' : ''}`}>                    <li>
                         <Link href='/entries' style={{ textDecoration: 'none', color: 'inherit' }}>
                             <div className="icon">
                                 <i className="fas fa-parking"></i>
