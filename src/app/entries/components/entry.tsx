@@ -1,11 +1,13 @@
 import "./entry.css";
-import { FaMapMarkerAlt, FaClock } from 'react-icons/fa';
+import { FaMapMarkerAlt, FaClock, FaCheckCircle } from 'react-icons/fa';
+import { MdOutlineEdit } from 'react-icons/md';
 import { darken } from 'polished';
 
 interface EntryProps {
     date: string;
     month: string;
     model: string;
+    brand: string;
     location: string;
     time: string;
     licensePlate: string;
@@ -14,7 +16,7 @@ interface EntryProps {
 }
 
 
-const Entry: React.FC<EntryProps> = ({ date, month, model, location, time, licensePlate, status, color }) => {
+const Entry: React.FC<EntryProps> = ({ date, month, model, brand, location, time, licensePlate, status, color }) => {
     return (
         <div className="card">
             <div className="date-container">
@@ -22,8 +24,8 @@ const Entry: React.FC<EntryProps> = ({ date, month, model, location, time, licen
                 <p>{month}</p>
             </div>
             <div className="info-container">
-                <div>   
-                    <h3>{model}</h3>
+                <div>       
+                    <p><b>{brand}</b> {model}</p>
                     <div className="location-info">
                         <span>
                             <FaMapMarkerAlt />
@@ -38,8 +40,14 @@ const Entry: React.FC<EntryProps> = ({ date, month, model, location, time, licen
                 <span className="license-plate" style={{ backgroundColor: darken(-0.2, color), color: color === "white" ? "black" : "white", border: "1px solid black" }}>{licensePlate}</span>
                 <span className="status">{status}</span>
             </div>
-            <button className="button primary">Registrar Saída</button>
-            <button className="button">Editar</button>
+            <div className="button-container">
+                <button className="button primary">
+                    <FaCheckCircle /> Registrar Saída
+                </button>
+                <button className="button">
+                    <MdOutlineEdit /> Editar
+                </button>
+            </div>
         </div>
     );
 }

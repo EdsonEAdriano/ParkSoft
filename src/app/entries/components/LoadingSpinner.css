@@ -2,7 +2,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh; /* Ajuste conforme necessário */
+    height: 90vh; /* Ajuste conforme necessário */
   }
   
   .loading-spinner {

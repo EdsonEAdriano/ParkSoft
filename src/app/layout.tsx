@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import localFont from "next/font/local";
 
 import Navbar from "./components/navbar";
@@ -26,7 +25,7 @@ export default function RootLayout({
         style={{ display: 'flex', height: '100vh', margin: 0, overflow: 'hidden' }}
       >
         <Navbar />
-        <div style={{ flex: 1, overflow: 'auto' }}>
+        <div style={{ flex: 1, overflow: 'auto', marginRight: '200px' }}>
           {children}
         </div>
       </body>

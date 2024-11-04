@@ -4,10 +4,15 @@ import Entry from "./components/entry";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import LoadingSpinner from "./components/LoadingSpinner";
+import AddButton from "./components/addEntryButton";
+import Modal from "./components/Modal";
+import AddEntryForm from "./components/addEntryForm";
+import { useRouter } from "next/navigation";
 
 interface IEntry {
   id: number;
-  vehicle_text: string;
+  brand: string;
+  model: string;
   plate: string;
   color: string;
   parking_location: string;
@@ -16,8 +21,10 @@ interface IEntry {
 }
 
 export default function Entries() {
-  const [entries, setEntries] = useState<IEntry[]>([]);
+  const [entries, setEntries] = useState<IEntry[]>([]); 
   const [loading, setLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     axios
@@ -47,9 +54,17 @@ export default function Entries() {
     "Dezembro",
   ];
 
+  const handleEntryAdded = () => {
+    setIsModalOpen(false);
+    router.push('/entries');
+  };
+
   return (
     <div>
-      <h1>Entradas</h1>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <h1>Entradas</h1>
+        <AddButton onClick={() => setIsModalOpen(true)} />
+      </div>
 
       {loading ? (
         <LoadingSpinner />
@@ -59,7 +74,8 @@ export default function Entries() {
             <Entry
               date={String(new Date(row.entry_date).getDate())}
               month={months[new Date(row.entry_date).getMonth()]}
-              model={row.vehicle_text}
+              model={row.model}
+              brand={row.brand}
               location={row.parking_location ?? "Não definido"}
               time={
                 new Date(row.entry_date).getHours() +
@@ -72,6 +88,12 @@ export default function Entries() {
             />
           </div>
         ))
+      )}
+
+      {isModalOpen && (
+        <Modal onClose={() => setIsModalOpen(false)}>
+          <AddEntryForm onEntryAdded={handleEntryAdded} />
+        </Modal>
       )}
     </div>
   );
