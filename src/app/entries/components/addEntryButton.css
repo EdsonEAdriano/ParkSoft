@@ -1,0 +1,19 @@
+.add-button {
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    font-size: 1rem;
+    border: none;
+    cursor: pointer;
+    background-color: #2a9d8f;
+    color: #fff;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);       
+}
+
+.add-button svg {
+    margin-right: 0.5rem;
+    color: #fff;
+} 
