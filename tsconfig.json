@@ -27,7 +27,10 @@
         "./src/*"
       ]
     },
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "types": [
+      "@sinonjs/fake-timers"
+    ]
   },
   "include": [
     "next-env.d.ts",

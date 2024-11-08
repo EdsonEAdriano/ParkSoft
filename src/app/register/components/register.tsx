@@ -2,6 +2,8 @@
 
 import React, { useState } from 'react';
 import styles from './register.module.css';
+import Link from 'next/link';
+import axios from 'axios';
 
 export default function Register() {
   const [formData, setFormData] = useState({
@@ -19,10 +21,30 @@ export default function Register() {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Aqui você pode adicionar a lógica de envio do formulário
-    console.log(formData);
+    
+    if (formData.senha !== formData.confirmaSenha) {
+      alert("As senhas não coincidem");
+      return;
+    }
+
+    try {
+      const response = await axios.post('/api/register', {
+        nomeCompleto: formData.nomeCompleto,
+        email: formData.email,
+        senha: formData.senha
+      });
+
+      if (response.status === 200) {
+        alert("Cadastro realizado com sucesso!");
+        // Redirecionar para login ou outra página
+      } else {
+        alert(response.data.error || "Erro ao realizar cadastro");
+      }
+    } catch (error) {
+      alert("Erro ao realizar cadastro");
+    }
   };
 
   return (
@@ -77,7 +99,7 @@ export default function Register() {
           <button type="submit" className={`${styles.button} ${styles.input}`}>Cadastrar</button>
         </form>
         <p className={styles.loginLink}>
-          ou <a href="/login">Faça login aqui</a>
+          ou <Link href="/login">Faça login aqui</Link>
         </p>
       </div>
     </div>

@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import styles from './login.module.css';
+import Link from 'next/link';
 
 const Login = () => {
     const [formData, setFormData] = useState({
@@ -58,7 +59,7 @@ const Login = () => {
                     </button>
                 </form>
                 <p className={styles.registerLink}>
-                    Não tem uma conta? <a href="/register">Inscreva-se aqui</a>
+                    Não tem uma conta? <Link href="/register">Inscreva-se aqui</Link>
                 </p>
             </div>
         </div>
