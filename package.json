@@ -9,8 +9,10 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@types/bcryptjs": "^2.4.6",
     "@vercel/postgres": "^0.10.0",
     "axios": "^1.7.7",
+    "bcryptjs": "^2.4.3",
     "next": "14.2.15",
     "polished": "^4.3.1",
     "react": "^18",
@@ -21,7 +23,9 @@
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "@types/sinonjs__fake-timers": "^8.1.5",
     "@typescript-eslint/parser": "^8.12.2",
+    "cypress": "^13.15.2",
     "eslint": "^8.52.0",
     "eslint-config-next": "14.2.15",
     "postcss": "^8",
