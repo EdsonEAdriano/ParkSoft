@@ -5,7 +5,6 @@ import styles from './register.module.css';
 
 export default function Register() {
   const [formData, setFormData] = useState({
-    tipoUsuario: 'usuario',
     nomeCompleto: '',
     email: '',
     senha: '',
@@ -39,30 +38,6 @@ export default function Register() {
         <h2>Inscreva-se agora</h2>
         <p>Preencha o formulário abaixo para obter acesso instantâneo</p>
         <form className={styles.form} onSubmit={handleSubmit}>
-          <div className={styles.radioGroup}>
-            <label>
-              <input
-                type="radio"
-                name="tipoUsuario"
-                value="usuario"
-                checked={formData.tipoUsuario === 'usuario'}
-                onChange={handleInputChange}
-                className={styles.input}
-              />
-              Usuário
-            </label>
-            <label>
-              <input
-                type="radio"
-                name="tipoUsuario"
-                value="proprietario"
-                checked={formData.tipoUsuario === 'proprietario'}
-                onChange={handleInputChange}
-                className={styles.input}
-              />
-              Proprietário
-            </label>
-          </div>
           <input 
             type="text" 
             name="nomeCompleto"

@@ -51,20 +51,6 @@
   max-width: 450px;
 }
 
-.radioGroup {
-  display: flex;
-  gap: 2rem;
-  margin-bottom: 1rem;
-}
-
-.radioGroup label {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: #333;
-  cursor: pointer;
-}
-
 .input {
   padding: 1rem;
   border: 1px solid #ddd;
