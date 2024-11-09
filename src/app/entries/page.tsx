@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 
 interface IEntry {
   id: number;
+  vehicleTypeID: string;
   brand: string;
   model: string;
   plate: string;
@@ -25,6 +26,7 @@ export default function Entries() {
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const router = useRouter();
+  const [initialEntry, setInitialEntry] = useState<IEntry | null>(null);
 
   useEffect(() => {
     axios
@@ -56,7 +58,22 @@ export default function Entries() {
 
   const handleEntryAdded = () => {
     setIsModalOpen(false);
-    router.push('/entries');
+    setLoading(true);
+    axios
+      .get("http://localhost:3000/api/entries")
+      .then((response) => {
+        setEntries(response.data.entries);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Erro ao fazer a requisição:", error);
+        setLoading(false);
+      });
+  };
+
+  const handleEditEntry = (entry: IEntry) => {
+    setIsModalOpen(true);
+    setInitialEntry(entry);
   };
 
   return (
@@ -85,14 +102,18 @@ export default function Entries() {
               licensePlate={row.plate}
               status={row.status}
               color={row.color}
+              onEdit={() => handleEditEntry(row)}
             />
           </div>
         ))
       )}
 
       {isModalOpen && (
-        <Modal onClose={() => setIsModalOpen(false)}>
-          <AddEntryForm onEntryAdded={handleEntryAdded} />
+        <Modal onClose={() => {
+          setIsModalOpen(false);
+          setInitialEntry(null);
+        }}>
+          <AddEntryForm onEntryAdded={handleEntryAdded} initialEntry={initialEntry} />
         </Modal>
       )}
     </div>

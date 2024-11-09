@@ -13,10 +13,11 @@ interface EntryProps {
     licensePlate: string;
     status: string;
     color: string;
+    onEdit: () => void;
 }
 
 
-const Entry: React.FC<EntryProps> = ({ date, month, model, brand, location, time, licensePlate, status, color }) => {
+const Entry: React.FC<EntryProps> = ({ date, month, model, brand, location, time, licensePlate, status, color, onEdit }) => {
     return (
         <div className="card">
             <div className="date-container">
@@ -41,10 +42,10 @@ const Entry: React.FC<EntryProps> = ({ date, month, model, brand, location, time
                 <span className="status">{status}</span>
             </div>
             <div className="button-container">
-                <button className="button primary">
+                <button className="button primary" onClick={onEdit}>
                     <FaCheckCircle /> Registrar Saída
                 </button>
-                <button className="button">
+                <button className="button" onClick={onEdit}>
                     <MdOutlineEdit /> Editar
                 </button>
             </div>

@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import "./AddEntryForm.css";
 import axios from "axios";
+import LoadingSpinner from "./LoadingSpinner";
 
 interface Entry {
+  id: number;
   vehicleTypeID: string;
   brand: string;
   model: string;
@@ -18,10 +20,12 @@ interface VehicleType {
 
 interface AddEntryFormProps {
   onEntryAdded: () => void;
+  initialEntry?: Entry;
 }
 
-const AddEntryForm: React.FC<AddEntryFormProps> = ({ onEntryAdded }) => {
-  const [entryDate, setEntryDate] = useState("");
+const AddEntryForm: React.FC<AddEntryFormProps> = ({ onEntryAdded, initialEntry }) => {
+  const [entryDate, setEntryDate] = useState(new Date().toISOString().slice(0, 16));
+  const [id, setID] = useState(0);
   const [brand, setBrand] = useState("");
   const [model, setModel] = useState("");
   const [plate, setPlate] = useState("");
@@ -30,30 +34,73 @@ const AddEntryForm: React.FC<AddEntryFormProps> = ({ onEntryAdded }) => {
 
   const [vehicleTypes, setVehicleTypes] = useState([]);
 
-  useEffect(() => {
-    const now = new Date();
-    const formattedDate = now.toISOString().slice(0, 16); // Formato YYYY-MM-DDTHH:MM para datetime-local
-    setEntryDate(formattedDate);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
-    axios
-      .get("http://localhost:3000/api/vehicleTypes")
-      .then((response) => {
+  useEffect(() => {
+    if (initialEntry) {
+      setID(initialEntry.id);
+      setVehicleTypeID(initialEntry.vehicle_type);
+      setBrand(initialEntry.brand);
+      setModel(initialEntry.model);
+      setPlate(initialEntry.plate);
+      setColor(initialEntry.color);
+      setEntryDate(formatDate(initialEntry.entryDate));
+    }
+  }, [initialEntry]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get("http://localhost:3000/api/vehicleTypes");
         setVehicleTypes(response.data.vehicleTypes);
-      })
-      .catch((error) => {
+
+        if (!initialEntry) {
+          setVehicleTypeID(response.data.vehicleTypes[0]?.id.toString());
+        }
+          
+      } catch (error) {
         console.error("Erro ao fazer a requisição:", error);
-      });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
   }, []);
 
+  const formatDate = (date: string | undefined) => {
+    return date ? date.slice(0, 16) : new Date().toISOString().slice(0, 16);
+  };
+  
+  useEffect(() => {
+    if (initialEntry) {
+      setEntryDate(formatDate(initialEntry.entryDate));
+    }
+  }, [initialEntry]);
+  
+
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
+
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEntryDate(e.target.value); // Atualiza o estado com o valor do input
+    setEntryDate(e.target.value);
   };
 
   const addEntry = async () => {
+    if (!vehicleTypeID) {
+      console.error("O tipo de veículo não pode estar vazio.");
+      return;
+    }
+
+    setIsSubmitting(true);
+
     const newEntry: Entry = {
+      id,
       vehicleTypeID,
       brand,
-      model,
+      model, 
       plate,
       color,
       entryDate: entryDate,
@@ -64,6 +111,44 @@ const AddEntryForm: React.FC<AddEntryFormProps> = ({ onEntryAdded }) => {
       onEntryAdded();
     } catch (error) {
       console.error("Erro ao adicionar entrada:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleEdit = async () => {
+    setIsSubmitting(true);
+
+    const editedEntry: Entry = {
+      id,
+      vehicleTypeID,
+      brand,
+      model,
+      plate,
+      color,
+      entryDate: entryDate,
+    };
+
+    try {
+      await axios.put('/api/entries', editedEntry);
+      onEntryAdded(); 
+    } catch (error) {
+      console.error("Erro ao editar entrada:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    setIsSubmitting(true);
+
+    try {
+      await axios.delete(`/api/entries`, { data: { id: initialEntry?.id } });
+      onEntryAdded();   
+    } catch (error) {
+      console.error("Erro ao excluir entrada:", error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -86,7 +171,7 @@ const AddEntryForm: React.FC<AddEntryFormProps> = ({ onEntryAdded }) => {
           onChange={(e) => setVehicleTypeID(e.target.value)}
         >
           {vehicleTypes.map((vehicleType: VehicleType) => (
-            <option key={vehicleType.id} value={vehicleType.id}>
+            <option key={vehicleType.id} value={vehicleType.id.toString()}>
               {vehicleType.text}
             </option>
           ))}
@@ -97,7 +182,7 @@ const AddEntryForm: React.FC<AddEntryFormProps> = ({ onEntryAdded }) => {
           className="input"
           type="text"
           placeholder="Marca do Veículo"
-          value={brand}
+          value={brand || ""}
           onChange={(e) => setBrand(e.target.value)}
         />
 
@@ -106,7 +191,7 @@ const AddEntryForm: React.FC<AddEntryFormProps> = ({ onEntryAdded }) => {
           className="input"
           type="text"
           placeholder="Modelo do Veículo"
-          value={model}
+          value={model || ""}
           onChange={(e) => setModel(e.target.value)}
         />
 
@@ -117,7 +202,7 @@ const AddEntryForm: React.FC<AddEntryFormProps> = ({ onEntryAdded }) => {
               className="input"
               type="text"
               placeholder="Placa do Veículo"
-              value={plate}
+              value={plate || ""}
               onChange={(e) => setPlate(e.target.value)}
             />
           </div>
@@ -127,7 +212,7 @@ const AddEntryForm: React.FC<AddEntryFormProps> = ({ onEntryAdded }) => {
               className="input"
               type="text"
               placeholder="Cor do Veículo"
-              value={color}
+              value={color || ""}
               onChange={(e) => setColor(e.target.value)}
             />
           </div>
@@ -140,16 +225,28 @@ const AddEntryForm: React.FC<AddEntryFormProps> = ({ onEntryAdded }) => {
               <input
                 className="input"
                 type="datetime-local"
-                value={entryDate}
+                value={entryDate || new Date().toISOString().slice(0, 16)}
                 onChange={handleDateChange}
               />
             </div>
           </div>
         </div>
 
-        <button type="button" className="button" onClick={addEntry}>
-          Cadastrar Entrada
-        </button>
+        
+        {initialEntry ? (
+          <>
+            <button type="button" className="button" onClick={handleEdit} disabled={isSubmitting}>
+              Editar Entrada
+            </button>
+            <button type="button" className="delete-button" onClick={handleDelete} disabled={isSubmitting}>
+              Excluir
+            </button>
+          </>
+        ) : (
+          <button type="submit" className="button" onClick={addEntry} disabled={isSubmitting}>
+            Cadastrar
+          </button>
+        )}
       </form>
     </div>
   );
