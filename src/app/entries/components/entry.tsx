@@ -38,7 +38,7 @@ const Entry: React.FC<EntryProps> = ({ date, month, model, brand, location, time
                         </span>
                     </div>
                 </div>
-                <span className="license-plate" style={{ backgroundColor: darken(-0.2, color), color: color === "white" ? "black" : "white", border: "1px solid black" }}>{licensePlate}</span>
+                <span className="license-plate" style={{ backgroundColor: darken(-0.2, color), color: color === "White" ? "Black" : "White", border: "1px solid black" }}>{licensePlate}</span>
                 <span className="status">{status}</span>
             </div>
             <div className="button-container">

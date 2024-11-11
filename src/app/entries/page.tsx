@@ -7,7 +7,6 @@ import LoadingSpinner from "./components/LoadingSpinner";
 import AddButton from "./components/addEntryButton";
 import Modal from "./components/Modal";
 import AddEntryForm from "./components/addEntryForm";
-import { useRouter } from "next/navigation";
 
 interface IEntry {
   id: number;
@@ -25,7 +24,6 @@ export default function Entries() {
   const [entries, setEntries] = useState<IEntry[]>([]); 
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const router = useRouter();
   const [initialEntry, setInitialEntry] = useState<IEntry | null>(null);
 
   useEffect(() => {

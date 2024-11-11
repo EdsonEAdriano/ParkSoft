@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./AddEntryForm.css";
 import axios from "axios";
 import LoadingSpinner from "./LoadingSpinner";
+import ColorPick from "./colorPick";
 
 interface Entry {
   id: number;
@@ -206,16 +207,8 @@ const AddEntryForm: React.FC<AddEntryFormProps> = ({ onEntryAdded, initialEntry 
               onChange={(e) => setPlate(e.target.value)}
             />
           </div>
-          <div className="col">
-            <label className="label">Cor do Veículo</label>
-            <input
-              className="input"
-              type="text"
-              placeholder="Cor do Veículo"
-              value={color || ""}
-              onChange={(e) => setColor(e.target.value)}
-            />
-          </div>
+          
+          <ColorPick value={color} onChange={(value) => setColor(value)}/>
         </div>
 
         <div className="row">
