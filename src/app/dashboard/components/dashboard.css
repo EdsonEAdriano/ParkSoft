@@ -1,0 +1,71 @@
+/* Estilos gerais */
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: #f4f4f4;
+  margin: 0;
+  padding: 0;
+}
+
+/* Estilo do container do Dashboard */
+.dashboard-container {
+  max-width: 1200px;
+  margin: 20px auto;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Estilos dos títulos */
+h1, h2 {
+  color: #333;
+  text-align: center;
+}
+
+/* Estilo das seções */
+section {
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: #fafafa;
+}
+
+/* Estilo das listas */
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+li {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+li:last-child {
+  border-bottom: none;
+}
+
+/* Estilo do valor da receita */
+p {
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #4a90e2;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .dashboard-container {
+    padding: 10px;
+  }
+
+  section {
+    padding: 10px;
+  }
+
+  p {
+    font-size: 1em;
+  }
+}
