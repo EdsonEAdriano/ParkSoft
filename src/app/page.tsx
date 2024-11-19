@@ -1,11 +1,24 @@
 "use client";
 
-import React from "react";
-import Estacionamento from "./components/estacionamento";
+import React, { useEffect, useState } from "react";
 import Home from "./home";
-import Register from "./register/components/register";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 export default function Page() {
+  const [session, setSession] = useState(null);
+
+  useEffect(() => {
+    const fetchSession = async () => {
+      const sessionData = await getServerSession(authOptions);
+      setSession(sessionData);
+    };
+
+    fetchSession();
+  }, []);
+
+  console.log(session);
+
   return (
     <>
       <Home />

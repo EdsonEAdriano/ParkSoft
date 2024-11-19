@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import styles from './login.module.css';
 import Link from 'next/link';
+import { signIn } from "next-auth/react";
 
 const Login = () => {
     const [formData, setFormData] = useState({
@@ -18,9 +19,15 @@ const Login = () => {
         }));
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        console.log(formData);
+
+        const res = await signIn("credentials", {
+            email: formData.email,
+            password: formData.senha,
+            redirect: true,
+            callbackUrl: "/",
+          });
     };
 
     return (

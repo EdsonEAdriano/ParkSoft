@@ -1,0 +1,66 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model t_entries {
+  id                  Int                 @id @default(autoincrement())
+  parking_location_id Int?
+  vehicle_id          Int?
+  plate               String              @db.VarChar
+  color               String              @db.VarChar
+  status              String              @db.VarChar
+  user_id             Int
+  entry_date          DateTime            @db.Timestamp(6)
+  exit_date           DateTime?           @db.Timestamp(6)
+  t_parking_location  t_parking_location? @relation(fields: [parking_location_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  t_status            t_status            @relation(fields: [status], references: [status], onDelete: NoAction, onUpdate: NoAction)
+  t_users             t_users             @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  t_vehicles          t_vehicles?         @relation(fields: [vehicle_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model t_parking_location {
+  id          Int         @id @default(autoincrement())
+  position_x  Int
+  position_y  Int
+  location_id String      @db.VarChar
+  description String?
+  status      String      @db.VarChar
+  created_at  DateTime    @db.Timestamp(6)
+  t_entries   t_entries[]
+}
+
+model t_status {
+  status      String      @id @db.VarChar
+  description String      @db.VarChar
+  t_entries   t_entries[]
+}
+
+model t_users {
+  id         Int         @id @default(autoincrement())
+  full_name  String      @db.VarChar
+  email      String      @unique @db.VarChar
+  password   String      @db.VarChar
+  role       String      @db.VarChar
+  created_at DateTime    @db.Timestamp(6)
+  t_entries  t_entries[]
+}
+
+model t_vehicle_types {
+  id         Int          @id @default(autoincrement())
+  text       String       @db.VarChar
+  t_vehicles t_vehicles[]
+}
+
+model t_vehicles {
+  id              Int             @id @default(autoincrement())
+  vehicle_type    Int
+  brand           String          @db.VarChar
+  model           String          @db.VarChar
+  t_entries       t_entries[]
+  t_vehicle_types t_vehicle_types @relation(fields: [vehicle_type], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}

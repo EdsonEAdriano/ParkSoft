@@ -96,6 +96,14 @@
   text-decoration: underline;
 }
 
+.validationList {
+  color: red;
+}
+
+.validationList p {
+  color: red;
+}
+
 /* Responsividade */
 @media (max-width: 768px) {
   .container {

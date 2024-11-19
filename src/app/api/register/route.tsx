@@ -1,53 +1,35 @@
 'use server';
 
-import { db } from "@vercel/postgres";
-import { NextResponse } from "next/server";
+import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
+import { NextResponse } from "next/server";
 
-interface Usuario {
-  nomeCompleto: string;
+const prisma = new PrismaClient();
+
+interface IUser {
   email: string;
-  senha: string;
+  password: string;
+  name: string;
 }
 
 export async function POST(request: Request) {
+  // Chama corretamente o método .json() para obter os dados da requisição
+  const data: IUser = await request.json();
+
+  const { email, password, name } = data;
+
+  // Console para verificar os dados
+  console.log('Dados da api', data);
+
+  const hashedPassword = bcrypt.hashSync(password, 10);
+
   try {
-    const client = await db.connect();
-    const data: Usuario = await request.json();
-    const { nomeCompleto, email, senha } = data;
-
-    // Verificar se o email já existe
-    const usuarioExistente = await client.sql`
-      SELECT id FROM t_users WHERE email = ${email}
-    `;
-
-    if (usuarioExistente.rows.length > 0) {
-      return NextResponse.json(
-        { error: "Email já cadastrado" },
-        { status: 400 }
-      );
-    }
-
-    // Criptografar a senha
-    const senhaCriptografada = await bcrypt.hash(senha, 10);
-
-    // Inserir novo usuário
-    const resultado = await client.sql`
-      INSERT INTO t_users (full_name, email, password, role, created_at)
-      VALUES (${nomeCompleto}, ${email}, ${senhaCriptografada}, 'A', NOW())
-      RETURNING id
-    `;
-
-    return NextResponse.json({ 
-      message: "Usuário criado com sucesso",
-      userId: resultado.rows[0].id 
+    const user = await prisma.t_users.create({
+      data: { email, password: hashedPassword, full_name: name, role: "USER", created_at: new Date() },
     });
-
+    return NextResponse.json({ message: "User created successfully", user });
   } catch (error) {
-    console.error('Erro ao criar usuário:', error);
-    return NextResponse.json(
-      { error: "Erro ao criar usuário" },
-      { status: 500 }
-    );
+    console.error('Error while creating user:', error);
+    return NextResponse.json({ error: "Error while creating user" }, { status: 500 });
   }
 }
