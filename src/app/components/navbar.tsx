@@ -68,11 +68,14 @@ const Navbar: React.FC = () => {
                         </div>
                         <span>Mensalistas</span>
                     </li>
+
                     <li>
-                        <div className="icon">
-                            <i className="fas fa-star"></i>
-                        </div>
-                        <span>Favoritos</span>
+                        <Link href='/dashboard' style={{ textDecoration: 'none', color: 'inherit' }}>
+                            <div className="icon">
+                                <i className="fas fa-chart-line"></i>
+                            </div>
+                            <span>Relatórios</span>
+                        </Link>
                     </li>
                 </ul>
             )}
