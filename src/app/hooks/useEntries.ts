@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-interface Entry {
+export interface Entry {
   id: number;
   vehicleTypeID: string;
   brand: string;
@@ -8,35 +8,33 @@ interface Entry {
   plate: string;
   color: string;
   entryDate: string;
-  parkingLocation: string;
+  exitDate?: string;
+  duration?: string;
   status: string;
 }
 
 const useEntries = () => {
   const [entries, setEntries] = useState<Entry[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchEntries = async () => {
-      try {
-        const response = await fetch('/api/entries');
-        if (!response.ok) {
-          throw new Error('Failed to fetch entries');
-        }
-        const data = await response.json();
+  const fetchEntries = async () => {
+    try {
+      const response = await fetch('/api/entries');
+      const data = await response.json();
+      if (response.ok) {
         setEntries(data.entries);
-      } catch (err: unknown) {
-        if (err instanceof Error) {
-          setError(err.message);
-        } else {
-          setError('Erro desconhecido');
-        }
-      } finally {
-        setLoading(false);
+      } else {
+        setError(data.error);
       }
-    };
+    } catch (err) {
+      setError('Erro ao buscar entradas');
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchEntries();
   }, []);
 
