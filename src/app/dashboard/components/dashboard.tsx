@@ -5,9 +5,7 @@ import './dashboard.css';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
 import { ChartData } from 'chart.js';
-import useEntries from '../../hooks/useEntries'; // Importando o hook
-import Entry from '../entries/components/entry'; // Importando o componente Entry
-
+import useEntries, { Entry } from '../../hooks/useEntries';
 
 // Registrando os componentes do Chart.js
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
@@ -19,7 +17,7 @@ const Dashboard: React.FC = () => {
   const [filtro, setFiltro] = useState('todos');
   const [periodo, setPeriodo] = useState<string>('30dias');
   const receitaTotal = 1000;
-  const { entries, loading, error } = useEntries(); // Usando o hook
+  const { entries, loading, error } = useEntries();
   const [dadosGrafico, setDadosGrafico] = useState<ChartData<'bar'>>({
     labels: [],
     datasets: [
@@ -38,8 +36,8 @@ const Dashboard: React.FC = () => {
 
   const filtrarHistorico = () => {
     if (filtro === 'todos') return entries;
-    if (filtro === 'abertos') return entries.filter(registro => !registro.status);
-    if (filtro === 'fechados') return entries.filter(registro => registro.status);
+    if (filtro === 'abertos') return entries.filter(registro => registro.status === 'aberto');
+    if (filtro === 'fechados') return entries.filter(registro => registro.status === 'fechado');
     return [];
   };
 
@@ -69,11 +67,21 @@ const Dashboard: React.FC = () => {
     }
   };
 
+  // Função para buscar entradas da API
+  const fetchEntries = async () => {
+    const response = await fetch('/api/entries'); // Chamada à API
+    const data = await response.json();
+    if (response.ok) {
+      setEntries(data.entries); // Atualizando o estado com as entradas
+    } else {
+      console.error(data.error); // Tratamento de erro
+    }
+  };
+
   React.useEffect(() => {
+    fetchEntries(); // Buscando entradas ao montar o componente
     atualizarDadosGrafico(periodo);
   }, [periodo]);
-
-  const entradasFiltradas = filtrarHistorico();
 
   return (
     <div className="dashboard-container">
@@ -110,27 +118,21 @@ const Dashboard: React.FC = () => {
           <thead>
             <tr>
               <th>Placa</th>
-              <th>cor</th>
+              <th>Cor</th>
               <th>Entrada</th>
               <th>Saída</th>
-              <th>Tempo de Permanência</th>
+              <th>Permanência</th>
             </tr>
           </thead>
           <tbody>
-            {entradasFiltradas.map((entry) => (
-              <Entry
-                key={entry.id}
-                date={new Date(entry.entryDate).toLocaleDateString()}
-                month={new Date(entry.entryDate).toLocaleString('default', { month: 'long' })}
-                model={entry.model}
-                brand={entry.brand}
-                location={entry.parkingLocation}
-                //time={/* Calcule o tempo aqui */}
-                licensePlate={entry.plate}
-                status={entry.status === 'P' ? 'Em aberto' : 'Saída registrada'}
-                color={entry.color}
-                onEdit={() => {/* Lógica para editar */}}
-              />
+            {filtrarHistorico().map((registro: Entry) => (
+              <tr key={registro.id}>
+                <td>{registro.plate}</td>
+                <td>{registro.color}</td>
+                <td>{registro.entryDate}</td>
+                <td>{registro.exitDate || 'N/A'}</td>
+                <td>{registro.duration || 'N/A'}</td>
+              </tr>
             ))}
           </tbody>
         </table>
