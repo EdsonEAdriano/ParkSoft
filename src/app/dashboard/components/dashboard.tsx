@@ -5,19 +5,37 @@ import './dashboard.css';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
 import { ChartData } from 'chart.js';
-import useEntries, { Entry } from '../../hooks/useEntries';
+import useEntries from '../../hooks/useEntries';
+import { darken } from 'polished';
+
+interface Entry {
+  id: number;
+  plate: string;
+  color: string;
+  status: string;
+  status_description: string;
+  entry_date: string;
+  exit_date?: string;
+  duration?: string;
+}
+
+interface ParkingStatus {
+  total_spaces: number;
+  available_spaces: number;
+  busy_spaces: number;
+  today_entries: number;
+}
 
 // Registrando os componentes do Chart.js
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const Dashboard: React.FC = () => {
-  const [totalVagas] = useState(20);
-  const [vagasOcupadas, setVagasOcupadas] = useState(0);
-  const [totalEntradasDoDia, setTotalEntradasDoDia] = useState(0);
   const [filtro, setFiltro] = useState('todos');
   const [periodo, setPeriodo] = useState<string>('30dias');
   const receitaTotal = 1000;
-  const { entries, loading, error } = useEntries();
+  const { loading, error } = useEntries();
+  const [entries, setEntries] = useState<Entry[]>([]);
+  const [parkingStatus, setparkingStatus] = useState<ParkingStatus>();
   const [dadosGrafico, setDadosGrafico] = useState<ChartData<'bar'>>({
     labels: [],
     datasets: [
@@ -29,14 +47,9 @@ const Dashboard: React.FC = () => {
     ],
   });
 
-  const registrarEntrada = () => {
-    setVagasOcupadas(prev => prev + 1);
-    setTotalEntradasDoDia(prev => prev + 1);
-  };
-
   const filtrarHistorico = () => {
     if (filtro === 'todos') return entries;
-    if (filtro === 'abertos') return entries.filter(registro => registro.status === 'aberto');
+    if (filtro === 'abertos') return entries.filter(registro => registro.status === 'P');
     if (filtro === 'fechados') return entries.filter(registro => registro.status === 'fechado');
     return [];
   };
@@ -67,10 +80,10 @@ const Dashboard: React.FC = () => {
     }
   };
 
-  // Função para buscar entradas da API
   const fetchEntries = async () => {
-    const response = await fetch('/api/entries'); // Chamada à API
+    const response = await fetch('/api/dashboard/entries'); // Chamada à API
     const data = await response.json();
+
     if (response.ok) {
       setEntries(data.entries); // Atualizando o estado com as entradas
     } else {
@@ -78,33 +91,48 @@ const Dashboard: React.FC = () => {
     }
   };
 
+  const fetchParkingStatus = async () => {
+    const response = await fetch('/api/dashboard/parking');
+    const data = await response.json();
+
+    console.log("Status do estacionamento: ", data.parking_status);
+
+    if (response.ok) {
+      setparkingStatus(data.parking_status[0]); // Atualizando o estado com as entradas
+    } else {
+      console.error(data.error); // Tratamento de erro
+    }
+  };
+
   React.useEffect(() => {
     fetchEntries(); // Buscando entradas ao montar o componente
+    fetchParkingStatus();   
     atualizarDadosGrafico(periodo);
   }, [periodo]);
+
+
 
   return (
     <div className="dashboard-container">
       <h1>Dashboard</h1>
       {loading && <p>Carregando entradas...</p>}
       {error && <p>{error}</p>}
-      <button onClick={registrarEntrada}>Registrar Entrada</button>
       <section className="estatisticas-vagas">
         <div className="estatistica-bloco">
           <p>Total de Vagas</p>
-          <h3>{totalVagas}</h3>
+          <h3>{parkingStatus?.total_spaces}</h3>
         </div>
         <div className="estatistica-bloco">
           <p>Vagas Ocupadas</p>
-          <h3>{vagasOcupadas}</h3>
+          <h3>{parkingStatus?.busy_spaces}</h3>
         </div>
         <div className="estatistica-bloco">
           <p>Vagas Disponíveis</p>
-          <h3>{totalVagas - vagasOcupadas}</h3>
+          <h3>{parkingStatus?.available_spaces}</h3>
         </div>
         <div className="estatistica-bloco">
           <p>Total de Entradas do Dia</p>
-          <h3>{totalEntradasDoDia}</h3>
+          <h3>{parkingStatus?.today_entries}</h3>
         </div>
       </section>
       <section>
@@ -119,6 +147,7 @@ const Dashboard: React.FC = () => {
             <tr>
               <th>Placa</th>
               <th>Cor</th>
+              <th>Status</th>
               <th>Entrada</th>
               <th>Saída</th>
               <th>Permanência</th>
@@ -128,10 +157,11 @@ const Dashboard: React.FC = () => {
             {filtrarHistorico().map((registro: Entry) => (
               <tr key={registro.id}>
                 <td>{registro.plate}</td>
-                <td>{registro.color}</td>
-                <td>{registro.entryDate}</td>
-                <td>{registro.exitDate || 'N/A'}</td>
-                <td>{registro.duration || 'N/A'}</td>
+                <td style={{ backgroundColor: darken(-0.2, registro.color)  }}></td>
+                <td>{registro.status_description}</td>
+                <td>{registro.entry_date}</td>
+                <td>{registro.exit_date}</td> 
+                <td>{registro.duration}</td>
               </tr>
             ))}
           </tbody>

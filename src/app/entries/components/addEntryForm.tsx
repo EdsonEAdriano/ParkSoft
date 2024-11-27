@@ -3,6 +3,7 @@ import "./AddEntryForm.css";
 import axios from "axios";
 import LoadingSpinner from "./LoadingSpinner";
 import ColorPick from "./colorPick";
+import AddressSelector from "./addressSelector";
 
 interface Entry {
   id: number;
@@ -11,6 +12,7 @@ interface Entry {
   model: string;
   plate: string;
   color: string;
+  parkingLocation: string;
   entryDate: string;
 }
 
@@ -24,13 +26,19 @@ interface AddEntryFormProps {
   initialEntry?: Entry;
 }
 
-const AddEntryForm: React.FC<AddEntryFormProps> = ({ onEntryAdded, initialEntry }) => {
-  const [entryDate, setEntryDate] = useState(new Date().toISOString().slice(0, 16));
+const AddEntryForm: React.FC<AddEntryFormProps> = ({
+  onEntryAdded,
+  initialEntry,
+}) => {
+  const [entryDate, setEntryDate] = useState(
+    new Date().toISOString().slice(0, 16),
+  );
   const [id, setID] = useState(0);
   const [brand, setBrand] = useState("");
   const [model, setModel] = useState("");
   const [plate, setPlate] = useState("");
   const [color, setColor] = useState("");
+  const [parkingLocation, setParkingLocation] = useState("");
   const [vehicleTypeID, setVehicleTypeID] = useState("");
 
   const [vehicleTypes, setVehicleTypes] = useState([]);
@@ -46,6 +54,7 @@ const AddEntryForm: React.FC<AddEntryFormProps> = ({ onEntryAdded, initialEntry 
       setModel(initialEntry.model);
       setPlate(initialEntry.plate);
       setColor(initialEntry.color);
+      setParkingLocation(initialEntry.parking_location);
       setEntryDate(formatDate(initialEntry.entryDate));
     }
   }, [initialEntry]);
@@ -53,13 +62,14 @@ const AddEntryForm: React.FC<AddEntryFormProps> = ({ onEntryAdded, initialEntry 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/api/vehicleTypes");
+        const response = await axios.get(
+          "http://localhost:3000/api/vehicleTypes",
+        );
         setVehicleTypes(response.data.vehicleTypes);
 
         if (!initialEntry) {
           setVehicleTypeID(response.data.vehicleTypes[0]?.id.toString());
         }
-          
       } catch (error) {
         console.error("Erro ao fazer a requisição:", error);
       } finally {
@@ -73,13 +83,12 @@ const AddEntryForm: React.FC<AddEntryFormProps> = ({ onEntryAdded, initialEntry 
   const formatDate = (date: string | undefined) => {
     return date ? date.slice(0, 16) : new Date().toISOString().slice(0, 16);
   };
-  
+
   useEffect(() => {
     if (initialEntry) {
       setEntryDate(formatDate(initialEntry.entryDate));
     }
   }, [initialEntry]);
-  
 
   if (isLoading) {
     return <LoadingSpinner />;
@@ -101,9 +110,10 @@ const AddEntryForm: React.FC<AddEntryFormProps> = ({ onEntryAdded, initialEntry 
       id,
       vehicleTypeID,
       brand,
-      model, 
+      model,
       plate,
       color,
+      parkingLocation,
       entryDate: entryDate,
     };
 
@@ -127,12 +137,13 @@ const AddEntryForm: React.FC<AddEntryFormProps> = ({ onEntryAdded, initialEntry 
       model,
       plate,
       color,
+      parkingLocation,
       entryDate: entryDate,
     };
 
     try {
-      await axios.put('/api/entries', editedEntry);
-      onEntryAdded(); 
+      await axios.put("/api/entries", editedEntry);
+      onEntryAdded();
     } catch (error) {
       console.error("Erro ao editar entrada:", error);
     } finally {
@@ -145,7 +156,7 @@ const AddEntryForm: React.FC<AddEntryFormProps> = ({ onEntryAdded, initialEntry 
 
     try {
       await axios.delete(`/api/entries`, { data: { id: initialEntry?.id } });
-      onEntryAdded();   
+      onEntryAdded();
     } catch (error) {
       console.error("Erro ao excluir entrada:", error);
     } finally {
@@ -207,11 +218,18 @@ const AddEntryForm: React.FC<AddEntryFormProps> = ({ onEntryAdded, initialEntry 
               onChange={(e) => setPlate(e.target.value)}
             />
           </div>
-          
-          <ColorPick value={color} onChange={(value) => setColor(value)}/>
+
+          <ColorPick value={color} onChange={(value) => setColor(value)} />
         </div>
 
         <div className="row">
+          <div className="col">
+            <div className="inputContainer">
+              <label className="label">Vaga</label>
+            </div>
+            <AddressSelector value={parkingLocation} onChange={(value) => setParkingLocation(value)}/>
+          </div>
+
           <div className="col">
             <label className="label">Data de Entrada</label>
             <div className="date-input-container">
@@ -225,18 +243,32 @@ const AddEntryForm: React.FC<AddEntryFormProps> = ({ onEntryAdded, initialEntry 
           </div>
         </div>
 
-        
         {initialEntry ? (
           <>
-            <button type="button" className="button" onClick={handleEdit} disabled={isSubmitting}>
+            <button
+              type="button"
+              className="button"
+              onClick={handleEdit}
+              disabled={isSubmitting}
+            >
               Editar Entrada
             </button>
-            <button type="button" className="delete-button" onClick={handleDelete} disabled={isSubmitting}>
+            <button
+              type="button"
+              className="delete-button"
+              onClick={handleDelete}
+              disabled={isSubmitting}
+            >
               Excluir
             </button>
           </>
         ) : (
-          <button type="submit" className="button" onClick={addEntry} disabled={isSubmitting}>
+          <button
+            type="submit"
+            className="button"
+            onClick={addEntry}
+            disabled={isSubmitting}
+          >
             Cadastrar
           </button>
         )}

@@ -2,15 +2,12 @@ import { useEffect, useState } from 'react';
 
 export interface Entry {
   id: number;
-  vehicleTypeID: string;
-  brand: string;
-  model: string;
   plate: string;
   color: string;
-  entryDate: string;
-  exitDate?: string;
-  duration?: string;
   status: string;
+  entry_date: string;
+  exit_date?: string;
+  duration?: string;
 }
 
 const useEntries = () => {

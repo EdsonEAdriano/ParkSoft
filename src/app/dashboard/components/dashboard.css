@@ -144,7 +144,6 @@ table {
 
 th, td {
   padding: 12px; 
-  border-radius: 8px;
 
   text-align: left; 
   border-bottom: 1px solid #c7c6c6; 
@@ -186,4 +185,12 @@ tr:hover {
 
 .filtro-container button:hover {
   background-color: #357ABD;
+}
+
+table tr:nth-child(even) {
+  background-color: #dadada; /* Cor clara para linhas pares */
+}
+
+table tr:nth-child(odd) {
+  background-color: white; /* Cor escura para linhas ímpares */
 }
