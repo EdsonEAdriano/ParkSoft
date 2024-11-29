@@ -7,6 +7,7 @@ import LoadingSpinner from "./components/LoadingSpinner";
 import AddButton from "./components/addEntryButton";
 import Modal from "./components/Modal";
 import AddEntryForm from "./components/addEntryForm";
+import SetExitEntry from "./components/setExitEntry";
 
 interface IEntry {
   id: number;
@@ -24,6 +25,7 @@ export default function Entries() {
   const [entries, setEntries] = useState<IEntry[]>([]); 
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalExitOpen, setIsModalExitOpen] = useState(false);
   const [initialEntry, setInitialEntry] = useState<IEntry | null>(null);
 
   useEffect(() => {
@@ -56,6 +58,7 @@ export default function Entries() {
 
   const handleEntryAdded = () => {
     setIsModalOpen(false);
+    setIsModalExitOpen(false);
     setLoading(true);
     axios
       .get("http://localhost:3000/api/entries")
@@ -74,11 +77,19 @@ export default function Entries() {
     setInitialEntry(entry);
   };
 
+  const handleSetExitEntry = (entry: IEntry) => {
+    setIsModalExitOpen(true);
+    setInitialEntry(entry);
+  };
+
   return (
     <div>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <h1>Entradas</h1>
-        <AddButton onClick={() => setIsModalOpen(true)} />
+        <AddButton onClick={() => {
+          setIsModalOpen(true);
+          setInitialEntry(null);
+        }} />
       </div>
 
       {loading ? (
@@ -100,6 +111,7 @@ export default function Entries() {
               licensePlate={row.plate}
               status={row.status}
               color={row.color}
+              onSetExit={() => handleSetExitEntry(row)}
               onEdit={() => handleEditEntry(row)}
             />
           </div>
@@ -109,9 +121,20 @@ export default function Entries() {
       {isModalOpen && (
         <Modal onClose={() => {
           setIsModalOpen(false);
+          setIsModalExitOpen(false);
           setInitialEntry(null);
         }}>
           <AddEntryForm onEntryAdded={handleEntryAdded} initialEntry={initialEntry} />
+        </Modal>
+      )}
+
+      {isModalExitOpen && (
+        <Modal onClose={() => {
+          setIsModalOpen(false);
+          setIsModalExitOpen(false);
+          setInitialEntry(null);
+        }}>
+          <SetExitEntry onEntryAdded={handleEntryAdded} initialEntry={initialEntry} />
         </Modal>
       )}
     </div>

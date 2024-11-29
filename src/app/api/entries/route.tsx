@@ -11,6 +11,7 @@ interface Entry {
   model: string;
   plate: string;
   color: string;
+  parkingLocation: string;
   entryDate: string;
 }
 
@@ -25,7 +26,7 @@ export async function GET() {
                                         veh.model,
                                         ent.plate, 
                                         ent.color,
-                                        pkl.description AS parking_location,
+                                        pkl.location_id AS parking_location,
                                         sts.description AS status,
                                         ent.entry_date
                                       FROM t_entries ent
@@ -50,9 +51,7 @@ export async function POST(request: Request) {
   const client = await db.connect();
   try {
     const data: Entry = await request.json();
-    const { vehicleTypeID, brand, model, plate, color, entryDate } = data;
-
-    console.log(data);
+    const { vehicleTypeID, brand, model, plate, color, parkingLocation, entryDate } = data;
 
     let vehicleId: number;
 
@@ -68,14 +67,39 @@ export async function POST(request: Request) {
         VALUES (${vehicleTypeID}, ${brand}, ${model})
         RETURNING id
       `;
+      
       vehicleId = insertResult.rows[0].id;
     }
+
+    const userResult = await client.sql`
+      SELECT id FROM t_users WHERE email = 'admin.silva@email.com'
+    `;
     
+
+    const userId = userResult.rows[0].id;
+
+    const parkingLocationResult = await client.sql`
+        SELECT id 
+        FROM t_parking_location 
+        WHERE location_id = ${parkingLocation}
+    `;
+
+
+    const parkingLocationId = parkingLocationResult.rows[0].id;
+
+    await client.sql`
+      UPDATE t_parking_location 
+        SET status = 'B'
+      WHERE id = ${parkingLocationId}
+    `;
+
+
     await client.sql`
       INSERT INTO t_entries 
-        (vehicle_id, plate, color, status, user_id, entry_date)
+
+        (parking_location_id, vehicle_id, plate, color, status, user_id, entry_date)
       VALUES 
-        (${vehicleId}, ${plate}, ${color}, 'P', 1, ${entryDate})
+        (${parkingLocationId}, ${vehicleId}, ${plate}, ${color}, 'P', ${userId}, ${entryDate})
     `;
 
     return NextResponse.json({ message: "Entry created successfully", vehicleId });
@@ -91,7 +115,7 @@ export async function PUT(request: Request) {
   const client = await db.connect();
   try {
     const data: Entry = await request.json();
-    const { id, vehicleTypeID, brand, model, plate, color } = data;
+    const { id, vehicleTypeID, brand, model, plate, color, parkingLocation, entryDate } = data;
 
     let vehicleId: number;
 
@@ -109,10 +133,32 @@ export async function PUT(request: Request) {
       `;
       vehicleId = insertResult.rows[0].id;
     }
+
+    await client.sql`
+      UPDATE t_parking_location
+        SET status = 'A'
+      FROM t_entries 
+      WHERE t_entries.parking_location_id = t_parking_location.id 
+        AND t_entries.id = ${id};
+    `;
+
+    const parkingLocationResult = await client.sql`
+        SELECT id 
+        FROM t_parking_location 
+        WHERE location_id = ${parkingLocation}
+    `;
+
+    const parkingLocationId = parkingLocationResult.rows[0].id;
+
+    await client.sql`
+      UPDATE t_parking_location 
+        SET status = 'B'
+      WHERE id = ${parkingLocationId}
+    `;
     
     await client.sql`
       UPDATE t_entries 
-        SET vehicle_id = ${vehicleId}, plate = ${plate}, color = ${color}
+        SET entry_date = ${entryDate}, parking_location_id = ${parkingLocationId}, vehicle_id = ${vehicleId}, plate = ${plate}, color = ${color}
       WHERE id = ${id}
     `;
 
@@ -131,7 +177,13 @@ export async function DELETE(request: Request) {
   try {
     const { id } = await request.json();
 
-    console.log('id da entrada', id)
+    await client.sql`
+      UPDATE t_parking_location
+        SET status = 'A'
+      FROM t_entries 
+      WHERE t_entries.parking_location_id = t_parking_location.id 
+        AND t_entries.id = ${id};
+    `;
 
     await client.sql`
       DELETE FROM t_entries 
