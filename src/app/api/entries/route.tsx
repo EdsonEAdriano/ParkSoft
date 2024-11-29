@@ -115,7 +115,7 @@ export async function PUT(request: Request) {
   const client = await db.connect();
   try {
     const data: Entry = await request.json();
-    const { id, vehicleTypeID, brand, model, plate, color, parkingLocation } = data;
+    const { id, vehicleTypeID, brand, model, plate, color, parkingLocation, entryDate } = data;
 
     let vehicleId: number;
 
@@ -158,7 +158,7 @@ export async function PUT(request: Request) {
     
     await client.sql`
       UPDATE t_entries 
-        SET parking_location_id = ${parkingLocationId}, vehicle_id = ${vehicleId}, plate = ${plate}, color = ${color}
+        SET entry_date = ${entryDate}, parking_location_id = ${parkingLocationId}, vehicle_id = ${vehicleId}, plate = ${plate}, color = ${color}
       WHERE id = ${id}
     `;
 

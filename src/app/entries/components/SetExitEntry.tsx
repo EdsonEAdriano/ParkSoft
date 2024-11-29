@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "./AddEntryForm.css";
+import "./SetExitEntry.css";
 import axios from "axios";
 import LoadingSpinner from "./LoadingSpinner";
 import ColorPick from "./colorPick";
@@ -14,6 +14,14 @@ interface Entry {
   color: string;
   parkingLocation: string;
   entryDate: string;
+  exitDate: string;
+  price: number;
+}
+
+interface SendEntry {
+  id: number;
+  exitDate: string;
+  price: number;
 }
 
 interface VehicleType {
@@ -21,21 +29,20 @@ interface VehicleType {
   text: string;
 }
 
-interface AddEntryFormProps {
+interface SetEntryFormProps {
+  initialEntry: Entry;
   onEntryAdded: () => void;
-  initialEntry?: Entry;
 }
 
-const AddEntryForm: React.FC<AddEntryFormProps> = ({
-  onEntryAdded,
-  initialEntry,
-}) => {
-  const [entryDate, setEntryDate] = useState("");
+const SetExitEntry: React.FC<SetEntryFormProps> = ({ initialEntry, onEntryAdded }) => {
+  const [entryDate, setEntryDate] = useState();
+  const [exitDate, setExitDate] = useState();
   const [id, setID] = useState(0);
   const [brand, setBrand] = useState("");
   const [model, setModel] = useState("");
-  const [plate, setPlate] = useState("");
   const [color, setColor] = useState("");
+  const [plate, setPlate] = useState("");
+  const [price, setPrice] = useState(0);
   const [parkingLocation, setParkingLocation] = useState("");
   const [vehicleTypeID, setVehicleTypeID] = useState("");
 
@@ -43,6 +50,42 @@ const AddEntryForm: React.FC<AddEntryFormProps> = ({
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+
+  const setDate = (exitDate: Date) => {
+    const entryDate = new Date(initialEntry.entry_date);
+
+    entryDate.setHours(entryDate.getHours() - 3);
+
+    setEntryDate(entryDate.toISOString().slice(0, 16));
+
+    console.log(exitDate  )
+
+    exitDate.setHours(exitDate.getHours() - 3);
+
+    setExitDate(exitDate.toISOString().slice(0, 16));
+
+    const differenceMinutes = (exitDate - entryDate) / (1000 * 60);
+
+    console.log(differenceMinutes)
+
+    setPrice(() => {
+      let calculatedPrice;
+    
+      // Se os minutos forem até 15, o valor é 0
+      if (differenceMinutes <= 15) {
+        calculatedPrice = 0;
+      } else if (differenceMinutes <= 60) {
+        // Para minutos até 60, aumenta de 10 em 10 a cada 30 minutos
+        calculatedPrice = Math.floor((differenceMinutes / 30)) * 10;
+      } else {
+        // Após 60 minutos, aumenta de 20 em 20 a cada 30 minutos
+        calculatedPrice = Math.floor((differenceMinutes / 30)) * 20;
+      }
+    
+      // Garante que o valor não seja menor que 0
+      return Math.max(0, calculatedPrice);
+    });
+}
 
   useEffect(() => {
     if (initialEntry) {
@@ -54,17 +97,10 @@ const AddEntryForm: React.FC<AddEntryFormProps> = ({
       setColor(initialEntry.color);
       setParkingLocation(initialEntry.parking_location);
 
-      const entryDateUnformated = new Date(initialEntry.entry_date);
-
-      entryDateUnformated.setHours(entryDateUnformated.getHours() - 3);
       
-      setEntryDate(entryDateUnformated.toISOString().slice(0, 16));
-    } else {
-      const entryDateUnformated = new Date();
 
-      entryDateUnformated.setHours(entryDateUnformated.getHours() - 3);
-
-      setEntryDate(entryDateUnformated.toISOString().slice(0, 16));
+      setDate(new Date());
+      
     }
   }, [initialEntry]);
 
@@ -90,75 +126,35 @@ const AddEntryForm: React.FC<AddEntryFormProps> = ({
   }, []);
 
 
+
+
   if (isLoading) {
     return <LoadingSpinner />;
   }
 
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEntryDate(e.target.value);
+    setExitDate(e.target.value);
+    setDate(new Date(e.target.value));
   };
 
-  const addEntry = async () => {
-    if (!vehicleTypeID) {
-      console.error("O tipo de veículo não pode estar vazio.");
-      return;
-    }
+  
 
+
+
+  const setExitEntry = async () => {
     setIsSubmitting(true);
 
-    const newEntry: Entry = {
+    const entry: SendEntry = {
       id,
-      vehicleTypeID,
-      brand,
-      model,
-      plate,
-      color,
-      parkingLocation,
-      entryDate: entryDate,
+      exitDate,
+      price
     };
 
     try {
-      await axios.post("/api/entries", newEntry);
+      await axios.put("/api/entries/exit", entry);
       onEntryAdded();
     } catch (error) {
       console.error("Erro ao adicionar entrada:", error);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const handleEdit = async () => {
-    setIsSubmitting(true);
-
-    const editedEntry: Entry = {
-      id,
-      vehicleTypeID,
-      brand,
-      model,
-      plate,
-      color,
-      parkingLocation,
-      entryDate: entryDate,
-    };
-
-    try {
-      await axios.put("/api/entries", editedEntry);
-      onEntryAdded();
-    } catch (error) {
-      console.error("Erro ao editar entrada:", error);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const handleDelete = async () => {
-    setIsSubmitting(true);
-
-    try {
-      await axios.delete(`/api/entries`, { data: { id: initialEntry?.id } });
-      onEntryAdded();
-    } catch (error) {
-      console.error("Erro ao excluir entrada:", error);
     } finally {
       setIsSubmitting(false);
     }
@@ -173,7 +169,7 @@ const AddEntryForm: React.FC<AddEntryFormProps> = ({
         className="form"
         onSubmit={(e) => {
           e.preventDefault();
-          addEntry();
+          setExitEntry();
         }}
       >
         <label className="label">Tipo do Veículo</label>
@@ -181,6 +177,7 @@ const AddEntryForm: React.FC<AddEntryFormProps> = ({
           className="input"
           value={vehicleTypeID}
           onChange={(e) => setVehicleTypeID(e.target.value)}
+          disabled
         >
           {vehicleTypes.map((vehicleType: VehicleType) => (
             <option key={vehicleType.id} value={vehicleType.id.toString()}>
@@ -195,7 +192,7 @@ const AddEntryForm: React.FC<AddEntryFormProps> = ({
           type="text"
           placeholder="Marca do Veículo"
           value={brand || ""}
-          onChange={(e) => setBrand(e.target.value)}
+          disabled
         />
 
         <label className="label">Modelo do Veículo</label>
@@ -204,7 +201,7 @@ const AddEntryForm: React.FC<AddEntryFormProps> = ({
           type="text"
           placeholder="Modelo do Veículo"
           value={model || ""}
-          onChange={(e) => setModel(e.target.value)}
+          disabled
         />
 
         <div className="row">
@@ -215,11 +212,11 @@ const AddEntryForm: React.FC<AddEntryFormProps> = ({
               type="text"
               placeholder="Placa do Veículo"
               value={plate || ""}
-              onChange={(e) => setPlate(e.target.value)}
+              disabled
             />
           </div>
 
-          <ColorPick value={color} onChange={(value) => setColor(value)} />
+          <ColorPick value={color} isDisable={true} />
         </div>
 
         <div className="row">
@@ -227,7 +224,7 @@ const AddEntryForm: React.FC<AddEntryFormProps> = ({
             <div className="inputContainer">
               <label className="label">Vaga</label>
             </div>
-            <AddressSelector value={parkingLocation} onChange={(value) => setParkingLocation(value)}/>
+            <AddressSelector value={parkingLocation} isDisable={true} />
           </div>
 
           <div className="col">
@@ -237,44 +234,47 @@ const AddEntryForm: React.FC<AddEntryFormProps> = ({
                 className="input"
                 type="datetime-local"
                 value={entryDate || new Date().toISOString().slice(0, 16)}
-                onChange={handleDateChange}
+                disabled
               />
             </div>
           </div>
         </div>
 
-        {initialEntry ? (
-          <>
-            <button
-              type="button"
-              className="button"
-              onClick={handleEdit}
-              disabled={isSubmitting}
-            >
-              Editar Entrada
-            </button>
-            <button
-              type="button"
-              className="delete-button"
-              onClick={handleDelete}
-              disabled={isSubmitting}
-            >
-              Excluir
-            </button>
-          </>
-        ) : (
-          <button
-            type="submit"
-            className="button"
-            onClick={addEntry}
-            disabled={isSubmitting}
-          >
-            Cadastrar
-          </button>
-        )}
+        <div className="row">
+          <div className="col">
+            <label className="label">Data de Saída</label>
+            <div className="date-input-container">
+              <input
+                className="input"
+                type="datetime-local"
+                value={exitDate}
+                onChange={handleDateChange}
+              />
+            </div>
+          </div>
+
+          <div className="col">
+            <label className="label">Preço</label>
+            <input
+              className="input"
+              type="text"
+              placeholder="Preço"
+              value={`R$ ${price.toFixed(2)}`}
+              disabled
+              onChange={(e) => setPrice(Number(e.target.value.replace('R$ ', '').replace(',', '.')))}
+            />
+          </div>
+        </div>
+        <button
+          type="submit"
+          className="button"
+          disabled={isSubmitting}
+        >
+          Registrar Saída
+        </button>
       </form>
     </div>
   );
 };
 
-export default AddEntryForm;
+export default SetExitEntry;

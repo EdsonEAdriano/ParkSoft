@@ -11,10 +11,11 @@ type Address = {
 
 type AddressSelectorProps = {
   value?: string;
-  onChange: (address: string) => void;
+  onChange?: (address: string) => void;
+  isDisable?: boolean;
 };
 
-const AddressSelector: React.FC<AddressSelectorProps> = ({value, onChange}) => {
+const AddressSelector: React.FC<AddressSelectorProps> = ({value, onChange, isDisable}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [parkingLocations, setParkingLocations] = useState<Address[]>([]);
 
@@ -36,7 +37,6 @@ const AddressSelector: React.FC<AddressSelectorProps> = ({value, onChange}) => {
   }, []);
 
   const handleSelect = (locationId: string) => {
-    alert(`Endereço selecionado: ${locationId}`);
     onChange(locationId); 
     setIsOpen(false);
   };
@@ -60,6 +60,7 @@ const AddressSelector: React.FC<AddressSelectorProps> = ({value, onChange}) => {
           placeholder="Clique para ver os endereços"
           readOnly
           className={styles.input}
+          disabled={isDisable}
         />
       </div>
       {isOpen && (

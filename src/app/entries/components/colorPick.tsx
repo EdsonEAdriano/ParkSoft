@@ -5,6 +5,7 @@ import './colorPick.css';
 type ColorPickerProps = {
   value?: string;  // Optional value for pre-selecting a color
   onChange?: (color: string) => void;  // Callback to handle color change
+  isDisable?: boolean;
 };
 
 const colorNames: string[] = [
@@ -26,7 +27,7 @@ const colorNames: string[] = [
   'Wheat', 'White', 'WhiteSmoke', 'Yellow', 'YellowGreen'
 ];
 
-const ColorPicker: React.FC<ColorPickerProps> = ({ value, onChange }) => {
+const ColorPicker: React.FC<ColorPickerProps> = ({ value, onChange, isDisable }) => {
     const [selectedColor, setSelectedColor] = useState<string>(value || 'AliceBlue');
   
     const handleChange = (event: ChangeEvent<HTMLSelectElement>) => {
@@ -40,7 +41,7 @@ const ColorPicker: React.FC<ColorPickerProps> = ({ value, onChange }) => {
     return (
         <div>
           <label id="labelSelect">Cor do Veículo:</label>
-          <select id="colorSelect" name="colors" value={selectedColor} onChange={handleChange} style={{background: selectedColor}}>
+          <select id="colorSelect" name="colors" value={selectedColor} onChange={handleChange} disabled={isDisable} style={{background: selectedColor}}>
             {colorNames.map((color) => (
               <option
                 key={color}
