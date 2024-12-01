@@ -19,6 +19,8 @@ interface IEntry {
   parking_location: string;
   status: string;
   entry_date: Date;
+  exit_date: Date;
+  price: number;
 }
 
 export default function Entries() {
@@ -108,6 +110,12 @@ export default function Entries() {
                 ":" +
                 String(new Date(row.entry_date).getMinutes()).padStart(2, "0")
               }
+              exit_time={
+                new Date(row.exit_date).getHours() +
+                ":" +
+                String(new Date(row.exit_date).getMinutes()).padStart(2, "0")
+              }
+              price={row.price.toFixed(2)}
               licensePlate={row.plate}
               status={row.status}
               color={row.color}

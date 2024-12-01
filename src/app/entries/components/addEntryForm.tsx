@@ -266,7 +266,6 @@ const AddEntryForm: React.FC<AddEntryFormProps> = ({
           <button
             type="submit"
             className="button"
-            onClick={addEntry}
             disabled={isSubmitting}
           >
             Cadastrar

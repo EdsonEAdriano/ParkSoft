@@ -28,7 +28,9 @@ export async function GET() {
                                         ent.color,
                                         pkl.location_id AS parking_location,
                                         sts.description AS status,
-                                        ent.entry_date
+                                        ent.entry_date,
+                                        ent.exit_date,
+                                        COALESCE(ent.price, 0) AS price
                                       FROM t_entries ent
                                       INNER JOIN t_vehicles veh
                                         ON veh.id = ent.vehicle_id

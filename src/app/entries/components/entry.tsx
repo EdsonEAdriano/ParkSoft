@@ -1,7 +1,7 @@
 import "./entry.css";
-import { FaMapMarkerAlt, FaClock, FaCheckCircle } from "react-icons/fa";
-import { MdOutlineEdit } from "react-icons/md";
-import { darken } from "polished";
+import { FaMapMarkerAlt, FaClock, FaCheckCircle, FaLongArrowAltRight } from "react-icons/fa";
+import { MdOutlineEdit, MdOutlinePriceCheck } from "react-icons/md";
+import { darken, margin } from "polished";
 
 interface EntryProps {
   date: string;
@@ -10,6 +10,8 @@ interface EntryProps {
   brand: string;
   location: string;
   time: string;
+  exit_time?: string;
+  price?: string;
   licensePlate: string;
   status: string;
   color: string;
@@ -24,6 +26,8 @@ const Entry: React.FC<EntryProps> = ({
   brand,
   location,
   time,
+  exit_time,
+  price,
   licensePlate,
   status,
   color,
@@ -49,6 +53,18 @@ const Entry: React.FC<EntryProps> = ({
             <span>
               <FaClock />
               {time}
+
+              {status == "Fechado" && (
+                <>
+                  <FaLongArrowAltRight style={{ marginLeft: "10px", marginRight: "10px" }} />
+
+                  <FaClock />
+                  {exit_time}
+
+                  <MdOutlinePriceCheck style={{ marginLeft: "15px" }} />
+                  {price}
+                </>
+              )}
             </span>
           </div>
         </div>
