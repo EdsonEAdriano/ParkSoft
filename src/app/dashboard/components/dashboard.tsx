@@ -24,6 +24,9 @@ interface ParkingStatus {
   available_spaces: number;
   busy_spaces: number;
   today_entries: number;
+  total_receipt: number;
+  last_30_days_entries: number;
+  last_12_months_entries: number;
 }
 
 // Registrando os componentes do Chart.js
@@ -32,7 +35,6 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 const Dashboard: React.FC = () => {
   const [filtro, setFiltro] = useState('todos');
   const [periodo, setPeriodo] = useState<string>('30dias');
-  const receitaTotal = 1000;
   const { loading, error } = useEntries();
   const [entries, setEntries] = useState<Entry[]>([]);
   const [parkingStatus, setparkingStatus] = useState<ParkingStatus>();
@@ -50,7 +52,7 @@ const Dashboard: React.FC = () => {
   const filtrarHistorico = () => {
     if (filtro === 'todos') return entries;
     if (filtro === 'abertos') return entries.filter(registro => registro.status === 'P');
-    if (filtro === 'fechados') return entries.filter(registro => registro.status === 'fechado');
+    if (filtro === 'fechados') return entries.filter(registro => registro.status === 'C');
     return [];
   };
 
@@ -61,7 +63,7 @@ const Dashboard: React.FC = () => {
         datasets: [
           {
             label: 'Entradas',
-            data: [3000],
+            data: [parkingStatus.last_30_days_entries || 0],  
             backgroundColor: 'rgba(75, 192, 192, 0.6)',
           },
         ],
@@ -72,7 +74,7 @@ const Dashboard: React.FC = () => {
         datasets: [
           {
             label: 'Entradas',
-            data: [15000],
+            data: [parkingStatus.last_12_months_entries || 0],
             backgroundColor: 'rgba(75, 192, 192, 0.6)',
           },
         ],
@@ -95,8 +97,6 @@ const Dashboard: React.FC = () => {
     const response = await fetch('/api/dashboard/parking');
     const data = await response.json();
 
-    console.log("Status do estacionamento: ", data.parking_status);
-
     if (response.ok) {
       setparkingStatus(data.parking_status[0]); // Atualizando o estado com as entradas
     } else {
@@ -107,8 +107,10 @@ const Dashboard: React.FC = () => {
   React.useEffect(() => {
     fetchEntries(); // Buscando entradas ao montar o componente
     fetchParkingStatus();   
-    atualizarDadosGrafico(periodo);
-  }, [periodo]);
+    if (parkingStatus) {
+      atualizarDadosGrafico(periodo);
+    }
+  }, [periodo, parkingStatus]);
 
 
 
@@ -169,7 +171,7 @@ const Dashboard: React.FC = () => {
       </section>
       <section>
         <h2>Relatório Financeiro</h2>
-        <p>Receita Total: R$ {receitaTotal.toFixed(2)}</p>
+        <p>Receita Total: R$ {parkingStatus?.total_receipt.toFixed(2)}</p>
 
         {/* Filtro de Período */}
         <div>
