@@ -38,7 +38,7 @@
   }
 
   .search-input {
-    width: 100%;
+    width: 30%;
     padding: 10px;
     margin-bottom: 20px; /* Espaçamento abaixo do campo de busca */
     border: 1px solid #ccc;
