@@ -8,6 +8,7 @@ import AddButton from "./components/addEntryButton";
 import Modal from "./components/Modal";
 import AddEntryForm from "./components/addEntryForm";
 import SetExitEntry from "./components/setExitEntry";
+import "./page.css";
 
 interface IEntry {
   id: number;
@@ -24,7 +25,10 @@ interface IEntry {
 }
 
 export default function Entries() {
-  const [entries, setEntries] = useState<IEntry[]>([]); 
+  const [entries, setEntries] = useState<IEntry[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState('');
+  const entriesPerPage = 4;
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalExitOpen, setIsModalExitOpen] = useState(false);
@@ -84,8 +88,19 @@ export default function Entries() {
     setInitialEntry(entry);
   };
 
+  const filteredEntries = entries.filter(entry =>
+    entry.model.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    entry.brand.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    entry.status.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const totalPages = Math.ceil(filteredEntries.length / entriesPerPage);
+  const indexOfLastEntry = currentPage * entriesPerPage;
+  const indexOfFirstEntry = indexOfLastEntry - entriesPerPage;
+  const currentEntries = filteredEntries.slice(indexOfFirstEntry, indexOfLastEntry);
+
   return (
-    <div>
+    <div className="entries-main">
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <h1>Entradas</h1>
         <AddButton onClick={() => {
@@ -94,10 +109,18 @@ export default function Entries() {
         }} />
       </div>
 
+      <input
+        type="text"
+        placeholder="Buscar entradas..."
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        className="search-input"
+      />
+
       {loading ? (
         <LoadingSpinner />
       ) : (
-        entries.map((row) => (
+        currentEntries.map((row) => (
           <div key={row.id}>
             <Entry
               date={String(new Date(row.entry_date).getDate())}
@@ -125,6 +148,26 @@ export default function Entries() {
           </div>
         ))
       )}
+
+      <div className="pagination">
+        <button onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))} disabled={currentPage === 1}>
+          &lt;
+        </button>
+        
+        {Array.from({ length: totalPages }, (_, index) => (
+          <button
+            key={index + 1}
+            onClick={() => setCurrentPage(index + 1)}
+            className={currentPage === index + 1 ? 'active' : ''}
+          >
+            {index + 1}
+          </button>
+        ))}
+
+        <button onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))} disabled={currentPage === totalPages}>
+          &gt;
+        </button>
+      </div>
 
       {isModalOpen && (
         <Modal onClose={() => {
