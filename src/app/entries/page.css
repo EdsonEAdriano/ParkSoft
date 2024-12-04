@@ -1,0 +1,46 @@
+.entries-main {
+    padding-left: 10%;
+    padding-right: 10%;
+}
+
+@media (max-width: 768px) {
+    .entries-main {
+        padding-left: 2%;
+        padding-right: 2%;
+        padding-top: 10%;
+    }
+}
+
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  
+  .pagination button {
+    margin: 0 5px;
+    padding: 5px 10px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
+  .pagination button.active {
+    background-color: #0056b3; /* Cor para o botão ativo */
+  }
+  
+  .pagination button:disabled {
+    background-color: #ccc; /* Cor para botões desabilitados */
+    cursor: not-allowed;
+  }
+
+  .search-input {
+    width: 30%;
+    padding: 10px;
+    margin-bottom: 20px; /* Espaçamento abaixo do campo de busca */
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
