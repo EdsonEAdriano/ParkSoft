@@ -1,36 +1,65 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+ParkSoft 🚗
+ParkSoft é um software de gerenciamento de estacionamento, desenvolvido para otimizar o controle de vagas, monitorar entradas e saídas, e gerar relatórios financeiros detalhados.
 
-## Getting Started
+📋 Funcionalidades
+Controle em tempo real das vagas disponíveis.
+Histórico de entradas e saídas de veículos.
+Relatórios financeiros para análise de receitas e despesas.
+Interface amigável e responsiva.
 
-First, run the development server:
+Memória atualizada
+Atualizei as informações no README para refletir o uso do PostgreSQL e Vercel. Aqui está o ajuste:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+🛠️ Tecnologias Utilizadas
+Frontend: React.js, Next.js
+Backend: Node.js (se aplicável)
+Banco de Dados: PostgreSQL, hospedado na Vercel
+Outras Ferramentas: TailwindCSS (ou CSS padrão, conforme o projeto)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+📂 Estrutura do Projeto
+csharp
+Copiar código
+ParkSoft  
+├── public/               # Arquivos públicos (imagens, ícones, etc.)  
+├── src/                  # Código-fonte principal  
+│   ├── components/       # Componentes reutilizáveis  
+│   ├── pages/            # Páginas do aplicativo  
+│   ├── styles/           # Arquivos de estilo CSS  
+│   └── utils/            # Funções auxiliares e configuração  
+├── package.json          # Dependências e scripts do projeto  
+└── README.md             # Documentação do projeto  
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+🚀 Começando
+Pré-requisitos
+Um editor de código como VS Code.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Instalação
+Clone este repositório:
 
-## Learn More
+Copiar código
+git clone https://github.com/EdsonEAdriano/ParkSoft.git  
+cd ParkSoft  
+Instale as dependências:
 
-To learn more about Next.js, take a look at the following resources:
+Copiar código
+npm install  
+Instalação
+Configure o banco de dados no arquivo .env (exemplo):
+env
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Copiar código
+DATABASE_URL=postgres://usuario:senha@host:porta/banco  
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Inicie o servidor:
+bash
+Copiar código
+npm run dev  
+Acesse o aplicativo em http://localhost:3000.
+📝 Contribuição
+Sinta-se à vontade para contribuir! Para isso:
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Faça um fork do projeto.
+Crie uma branch para a sua feature: git checkout -b feature/nova-feature.
+Faça commit das suas alterações: git commit -m 'Adiciona nova feature'.
+Envie para o repositório remoto: git push origin feature/nova-feature.
+Abra um Pull Request.
