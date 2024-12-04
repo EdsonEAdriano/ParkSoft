@@ -12,8 +12,9 @@ Atualizei as informações no README para refletir o uso do PostgreSQL e Vercel.
 
 # 🛠️ Tecnologias Utilizadas
 Frontend: React.js, Next.js
-Backend: Node.js (se aplicável)
+
 Banco de Dados: PostgreSQL, hospedado na Vercel
+
 Outras Ferramentas: TailwindCSS (ou CSS padrão, conforme o projeto)
 
 # 📂 Estrutura do Projeto
