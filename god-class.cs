@@ -5,7 +5,7 @@ using System.IO;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
-
+// Comentário via Bloodhound
 namespace GodClassSample
 {
     // ⚠️ Exemplo de GOD CLASS – não copie para produção!
