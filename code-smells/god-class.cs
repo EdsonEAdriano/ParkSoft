@@ -1,4 +1,97 @@
-using System;
+public class Produto
+{
+    public string Nome { get; set; }
+    public double Preco { get; set; }
+
+    public Produto(string nome, double preco)
+    {
+        Nome = nome;
+        Preco = preco;
+    }
+}
+
+public class Pedido
+{
+    public int Id { get; set; }
+    public Produto Produto { get; set; }
+    public int Quantidade { get; set; }
+    public double PrecoTotal { get; set; }
+
+    public Pedido(int id, Produto produto, int quantidade)
+    {
+        Id = id;
+        Produto = produto;
+        Quantidade = quantidade;
+        PrecoTotal = produto.Preco * quantidade;
+    }
+}
+
+public class Pagamento
+{
+    public double Valor { get; set; }
+
+    public Pagamento(double valor)
+    {
+        Valor = valor;
+    }
+
+    public void EfetuarPagamento()
+    {
+        Console.WriteLine($"Pagamento de R${Valor} efetuado.");
+    }
+}
+
+public class Estoque
+{
+    public Produto Produto { get; set; }
+    public int Quantidade { get; set; }
+
+    public Estoque(Produto produto, int quantidade)
+    {
+        Produto = produto;
+        Quantidade = quantidade;
+    }
+
+    public void AtualizarEstoque(int quantidade)
+    {
+        Quantidade -= quantidade;
+        Console.WriteLine($"Estoque do produto {Produto.Nome} atualizado. {quantidade} unidades retiradas.");
+    }
+}
+
+public class Notificacao
+{
+    public string Email { get; set; }
+    public int PedidoId { get; set; }
+
+    public Notificacao(string email, int pedidoId)
+    {
+        Email = email;
+        PedidoId = pedidoId;
+    }
+
+    public void EnviarEmailNotificacao()
+    {
+        Console.WriteLine($"E-mail enviado para {Email}: Pedido {PedidoId} confirmado.");
+    }
+}
+
+public class Relatorio
+{
+    public int PedidoId { get; set; }
+    public double Valor { get; set; }
+
+    public Relatorio(int pedidoId, double valor)
+    {
+        PedidoId = pedidoId;
+        Valor = valor;
+    }
+
+    public void GerarRelatorioPedido()
+    {
+        Console.WriteLine($"Relatório gerado para o pedido {PedidoId}: Valor total R${Valor}");
+    }
+}
 using System.Collections.Generic;
 
 public class SistemaGestaoPedidos
